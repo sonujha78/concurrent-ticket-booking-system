@@ -16,7 +16,7 @@ sudo systemctl enable --now redis-server
 
 ## Known Issue: Port Conflict with Docker
 
-A pre-existing Docker container (`pm_redis`) was already bound to port 6379, causing the native `redis-server` service to fail with:
+A pre-existing Docker container (pm_redis) was already bound to port 6379, causing the native redis-server service to fail with:
 Warning: Could not create server TCP listening socket 127.0.0.1:6379: bind: Address already in use
 
 ### Fix Applied
@@ -34,15 +34,20 @@ sudo systemctl restart redis-server
 redis-cli ping
 ```
 
-Expected: `PONG`
+Expected output: `PONG`
 
-## Connection Details (for Spring Boot application.properties)
+## Connection Details for Spring Boot application.properties
+
+```properties
 spring.redis.host=localhost
 spring.redis.port=6379
 spring.session.store-type=redis
+```
 
-## Proof of Session Persistence (documented separately with screenshots)
+## Proof of Session Persistence
 
-1. Log in through the app (session created, stored in Redis)
+Documented separately with screenshots. Steps:
+
+1. Log in through the app — session created and stored in Redis
 2. Kill the Tomcat node currently serving that session
-3. Refresh — user remains logged in because the session lives in Redis, not on the node
+3. Refresh the page — user remains logged in because the session lives in Redis, not on the node
