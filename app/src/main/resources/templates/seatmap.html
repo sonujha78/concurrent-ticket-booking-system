@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Seat Map</title>
+    <style>
+        .seat { display: inline-block; width: 40px; height: 40px; margin: 4px;
+                text-align: center; line-height: 40px; border-radius: 4px; cursor: pointer; }
+        .available { background-color: #4CAF50; color: white; }
+        .booked { background-color: #f44336; color: white; cursor: not-allowed; }
+        .locked { background-color: #ff9800; color: white; }
+        #message { margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>Seat Map - Event <span th:text="${eventId}"></span></h2>
+    <a th:href="@{/events}">Back to events</a>
+
+    <div id="seatContainer">
+        <div th:each="seat : ${seats}"
+             th:class="'seat ' + ${seat.status}"
+             th:text="${seat.seatNumber}"
+             th:attr="data-seat-id=${seat.seatId},data-status=${seat.status}"
+             onclick="bookSeat(this)">
+        </div>
+    </div>
+
+    <div id="message"></div>
+
+    <script th:inline="javascript">
+        function bookSeat(el) {
+            const status = el.getAttribute('data-status');
+            if (status !== 'available') {
+                document.getElementById('message').innerText = 'Seat already booked, please choose another seat.';
+                document.getElementById('message').style.color = 'red';
+                return;
+            }
+
+            const seatId = el.getAttribute('data-seat-id');
+            const bookingRef = crypto.randomUUID(); // idempotency key generated once per attempt
+
+            fetch('/api/book', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ seatId: parseInt(seatId), bookingRef: bookingRef })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const msg = document.getElementById('message');
+                if (data.success) {
+                    el.classList.remove('available');
+                    el.classList.add('booked');
+                    el.setAttribute('data-status', 'booked');
+                    msg.innerText = 'Booking confirmed! Reference: ' + data.bookingRef;
+                    msg.style.color = 'green';
+                } else {
+                    msg.innerText = data.message;
+                    msg.style.color = 'red';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

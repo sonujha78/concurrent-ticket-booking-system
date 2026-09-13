@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Ticket Booking</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <form th:action="@{/login}" method="post">
+        <label>User ID: <input type="text" name="userId" required></label>
+        <button type="submit">Login</button>
+    </form>
+</body>
+</html>

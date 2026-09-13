@@ -6,3 +6,4 @@ target/
 *.iml
 .env
 node_modules/
+cookies.txt
