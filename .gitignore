@@ -1,0 +1,8 @@
+target/
+*.class
+*.war
+*.log
+.idea/
+*.iml
+.env
+node_modules/
