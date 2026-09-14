@@ -53,8 +53,15 @@ pipeline {
             steps {
                 script {
                     def healthy = false
-                    for (int i = 0; i < 20; i++) {
-                        def code = sh(script: "curl -s -o /dev/null -w '%{http_code}' ${NODE1_HEALTH}", returnStdout: true).trim()
+                    for (int i = 0; i < 30; i++) {
+                        // returnStatus:true stops curl's own non-zero exit (e.g. connection
+                        // refused while Tomcat is still starting up) from aborting the step,
+                        // so the retry loop can keep going instead of failing on attempt 1.
+                        def code = sh(
+                            script: "curl -s -o /dev/null -w '%{http_code}' --max-time 3 ${NODE1_HEALTH} || true",
+                            returnStdout: true
+                        ).trim()
+                        echo "Node 1 health check attempt ${i + 1}: HTTP ${code}"
                         if (code == '200') {
                             healthy = true
                             break
@@ -83,8 +90,12 @@ pipeline {
             steps {
                 script {
                     def healthy = false
-                    for (int i = 0; i < 20; i++) {
-                        def code = sh(script: "curl -s -o /dev/null -w '%{http_code}' ${NODE2_HEALTH}", returnStdout: true).trim()
+                    for (int i = 0; i < 30; i++) {
+                        def code = sh(
+                            script: "curl -s -o /dev/null -w '%{http_code}' --max-time 3 ${NODE2_HEALTH} || true",
+                            returnStdout: true
+                        ).trim()
+                        echo "Node 2 health check attempt ${i + 1}: HTTP ${code}"
                         if (code == '200') {
                             healthy = true
                             break
