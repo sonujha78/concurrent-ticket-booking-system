@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Session Debug</title>
+</head>
+<body>
+    <h2>Session Info</h2>
+    <p>User ID: <span th:text="${userId}"></span></p>
+    <p>Session ID: <span th:text="${sessionId}"></span></p>
+    <p>Server timestamp: <span th:text="${#dates.createNow()}"></span></p>
+</body>
+</html>
