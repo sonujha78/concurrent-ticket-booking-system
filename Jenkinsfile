@@ -42,7 +42,7 @@ pipeline {
         stage('Deploy to Tomcat Node 1') {
             steps {
                 sh """
-                    sudo cp app/target/booking.war ${NODE1_WEBAPP}
+                    sudo cp ${WORKSPACE}/app/target/booking.war ${NODE1_WEBAPP}
                     sudo chown tomcat:tomcat ${NODE1_WEBAPP}
                     sudo systemctl restart tomcat-node1
                 """
@@ -72,7 +72,7 @@ pipeline {
         stage('Deploy to Tomcat Node 2') {
             steps {
                 sh """
-                    sudo cp app/target/booking.war ${NODE2_WEBAPP}
+                    sudo cp ${WORKSPACE}/app/target/booking.war ${NODE2_WEBAPP}
                     sudo chown tomcat:tomcat ${NODE2_WEBAPP}
                     sudo systemctl restart tomcat-node2
                 """
